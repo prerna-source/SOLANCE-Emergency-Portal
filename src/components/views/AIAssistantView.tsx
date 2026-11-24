@@ -4,16 +4,7 @@ import {
   Send,
   ShieldCheck,
   Lock,
-  CheckCircle2,
-  AlertTriangle,
-  XCircle,
-  HelpCircle,
-  Cpu,
-  FileCheck,
-  Terminal,
-  Activity,
   Layers,
-  Sparkles,
 } from 'lucide-react';
 import { useSimulation } from '../../context/SimulationContext';
 
@@ -27,7 +18,8 @@ interface ChatMessage {
 }
 
 export const AIAssistantView: React.FC = () => {
-  const { state, activeIncident, aiRecommendation, selectIncident } = useSimulation();
+  const { state, activeIncident, aiRecommendation } = useSimulation();
+  const isLight = state.theme === 'light';
 
   const [inputQuery, setInputQuery] = useState('');
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
@@ -123,17 +115,45 @@ export const AIAssistantView: React.FC = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 h-[calc(100vh-8.5rem)]">
       {/* Left Chat & Query Terminal */}
-      <div className="lg:col-span-7 flex flex-col rounded-xl bg-[#131a2a] border border-[#1e293b] shadow-2xl overflow-hidden h-full">
+      <div
+        className={`lg:col-span-7 flex flex-col rounded-xl border shadow-xl overflow-hidden h-full transition-colors duration-200 ${
+          isLight
+            ? 'bg-white border-slate-200'
+            : 'bg-[#131a2a] border-[#1e293b]'
+        }`}
+      >
         {/* Terminal Header */}
-        <div className="p-4 border-b border-[#1e293b] bg-[#0e1424] flex items-center justify-between">
+        <div
+          className={`p-4 border-b flex items-center justify-between transition-colors duration-200 ${
+            isLight
+              ? 'bg-slate-50 border-slate-200'
+              : 'bg-[#0e1424] border-[#1e293b]'
+          }`}
+        >
           <div className="flex items-center space-x-2.5">
-            <div className="p-2 rounded-lg bg-red-500/20 text-red-400 border border-red-500/30">
+            <div
+              className={`p-2 rounded-lg border ${
+                isLight
+                  ? 'bg-red-100 text-red-600 border-red-200'
+                  : 'bg-red-500/20 text-red-400 border border-red-500/30'
+              }`}
+            >
               <Bot className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white font-mono flex items-center space-x-1.5">
+              <h3
+                className={`text-sm font-bold font-mono flex items-center space-x-1.5 ${
+                  isLight ? 'text-slate-900' : 'text-white'
+                }`}
+              >
                 <span>SOLACE AI Emergency Console</span>
-                <span className="px-1.5 py-0.2 rounded text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+                <span
+                  className={`px-1.5 py-0.2 rounded text-[9px] border font-bold ${
+                    isLight
+                      ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                      : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                  }`}
+                >
                   ONLINE
                 </span>
               </h3>
@@ -143,22 +163,34 @@ export const AIAssistantView: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-2 text-[10px] font-mono text-emerald-400">
+          <div
+            className={`flex items-center space-x-2 text-[10px] font-mono ${
+              isLight ? 'text-emerald-700 font-bold' : 'text-emerald-400'
+            }`}
+          >
             <ShieldCheck className="w-4 h-4" />
             <span className="font-bold">Zero-Hallucination Guardrails</span>
           </div>
         </div>
 
         {/* Quick Prompts Bar */}
-        <div className="p-2.5 bg-[#0b0f19] border-b border-[#1e293b] flex items-center space-x-2 overflow-x-auto">
-          <span className="text-[10px] uppercase font-mono font-bold text-slate-500 shrink-0">
+        <div
+          className={`p-2.5 border-b flex items-center space-x-2 overflow-x-auto ${
+            isLight ? 'bg-slate-100 border-slate-200' : 'bg-[#0b0f19] border-[#1e293b]'
+          }`}
+        >
+          <span className="text-[10px] uppercase font-mono font-bold text-slate-400 shrink-0">
             Presets:
           </span>
           {quickPrompts.map((p, idx) => (
             <button
               key={idx}
               onClick={() => handleSend(p)}
-              className="px-2.5 py-1 rounded-full bg-[#182238] hover:bg-[#22304d] border border-[#2a3b5c] text-[10px] text-slate-300 font-mono whitespace-nowrap transition-colors"
+              className={`px-2.5 py-1 rounded-full border text-[10px] font-mono whitespace-nowrap transition-colors ${
+                isLight
+                  ? 'bg-white hover:bg-slate-200 border-slate-300 text-slate-700 shadow-xs'
+                  : 'bg-[#182238] hover:bg-[#22304d] border-[#2a3b5c] text-slate-300'
+              }`}
             >
               {p}
             </button>
@@ -175,10 +207,16 @@ export const AIAssistantView: React.FC = () => {
                 className={`flex flex-col ${isAi ? 'items-start' : 'items-end'}`}
               >
                 <div className="flex items-center space-x-2 mb-1">
-                  <span className="text-[10px] text-slate-500">{msg.timestamp}</span>
+                  <span className="text-[10px] text-slate-400">{msg.timestamp}</span>
                   <span
                     className={`text-[10px] font-bold ${
-                      isAi ? 'text-red-400' : 'text-cyan-400'
+                      isAi
+                        ? isLight
+                          ? 'text-red-700'
+                          : 'text-red-400'
+                        : isLight
+                        ? 'text-sky-700'
+                        : 'text-cyan-400'
                     }`}
                   >
                     {isAi ? 'SOLACE AI' : 'COMMAND OPERATOR'}
@@ -187,9 +225,15 @@ export const AIAssistantView: React.FC = () => {
                     <span
                       className={`px-1.5 py-0.2 rounded text-[8px] font-bold ${
                         msg.verifiedStatus === 'VERIFIED'
-                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                          ? isLight
+                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                            : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                           : msg.verifiedStatus === 'UNVERIFIED'
-                          ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                          ? isLight
+                            ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                            : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                          : isLight
+                          ? 'bg-red-100 text-red-800 border border-red-300'
                           : 'bg-red-500/20 text-red-400 border border-red-500/30'
                       }`}
                     >
@@ -199,9 +243,13 @@ export const AIAssistantView: React.FC = () => {
                 </div>
 
                 <div
-                  className={`max-w-xl p-3.5 rounded-xl whitespace-pre-line leading-relaxed ${
+                  className={`max-w-xl p-3.5 rounded-xl whitespace-pre-line leading-relaxed shadow-xs ${
                     isAi
-                      ? 'bg-[#0e1424] border border-[#1e2b45] text-slate-200'
+                      ? isLight
+                        ? 'bg-slate-50 border border-slate-200 text-slate-800'
+                        : 'bg-[#0e1424] border border-[#1e2b45] text-slate-200'
+                      : isLight
+                      ? 'bg-red-600 text-white shadow-sm'
                       : 'bg-red-600/20 border border-red-500/40 text-white'
                   }`}
                 >
@@ -213,7 +261,13 @@ export const AIAssistantView: React.FC = () => {
         </div>
 
         {/* Input Bar */}
-        <div className="p-3 border-t border-[#1e293b] bg-[#0e1424]">
+        <div
+          className={`p-3 border-t transition-colors duration-200 ${
+            isLight
+              ? 'bg-slate-50 border-slate-200'
+              : 'bg-[#0e1424] border-[#1e293b]'
+          }`}
+        >
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -226,11 +280,15 @@ export const AIAssistantView: React.FC = () => {
               value={inputQuery}
               onChange={(e) => setInputQuery(e.target.value)}
               placeholder="Ask SOLACE AI for route safety, roadblock causes, or recon instructions..."
-              className="flex-1 bg-[#131b2e] border border-[#1e2b45] rounded-lg px-4 py-2.5 text-xs text-white placeholder-slate-500 font-mono focus:outline-none focus:border-red-500/60"
+              className={`flex-1 rounded-lg px-4 py-2.5 text-xs font-mono focus:outline-none focus:ring-1 ${
+                isLight
+                  ? 'bg-white border border-slate-300 text-slate-900 placeholder-slate-400 focus:border-red-500 focus:ring-red-400/20'
+                  : 'bg-[#131b2e] border border-[#1e2b45] text-white placeholder-slate-500 focus:border-red-500/60'
+              }`}
             />
             <button
               type="submit"
-              className="px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-mono font-bold transition-colors flex items-center space-x-1.5 shadow-md shadow-red-950/50"
+              className="px-4 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-mono font-bold transition-colors flex items-center space-x-1.5 shadow-md shadow-red-950/20"
             >
               <span>SEND</span>
               <Send className="w-3.5 h-3.5" />
@@ -242,41 +300,75 @@ export const AIAssistantView: React.FC = () => {
       {/* Right Guardrails Telemetry & Policy Inspector */}
       <div className="lg:col-span-5 flex flex-col space-y-4 overflow-y-auto">
         {/* Guardrail Rules Overview */}
-        <div className="p-4 rounded-xl bg-[#131a2a] border border-[#1e293b] space-y-3">
+        <div
+          className={`p-4 rounded-xl border space-y-3 shadow-sm transition-colors duration-200 ${
+            isLight
+              ? 'bg-white border-slate-200'
+              : 'bg-[#131a2a] border-[#1e293b]'
+          }`}
+        >
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold text-white uppercase font-mono tracking-wider flex items-center space-x-1.5">
-              <Lock className="w-4 h-4 text-emerald-400" />
+            <h3
+              className={`text-xs font-bold uppercase font-mono tracking-wider flex items-center space-x-1.5 ${
+                isLight ? 'text-slate-900' : 'text-white'
+              }`}
+            >
+              <Lock className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               <span>Strict AI Guardrail Architecture</span>
             </h3>
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+            <span
+              className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border ${
+                isLight
+                  ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                  : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+              }`}
+            >
               ACTIVE & ENFORCED
             </span>
           </div>
 
           <div className="space-y-2.5 text-xs">
-            <div className="p-2.5 rounded-lg bg-[#0e1424] border border-[#1e2b45]">
-              <span className="text-emerald-400 font-bold font-mono text-[11px] block mb-0.5">
+            <div
+              className={`p-2.5 rounded-lg border ${
+                isLight
+                  ? 'bg-slate-50 border-slate-200'
+                  : 'bg-[#0e1424] border-[#1e2b45]'
+              }`}
+            >
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-[11px] block mb-0.5">
                 Rule 1: Primary Artery First
               </span>
-              <p className="text-slate-300 text-[11px]">
+              <p className={isLight ? 'text-slate-600' : 'text-slate-300'}>
                 Always identifies the incident location and evaluates primary corridor. If blocked, automatically audits secondary paths.
               </p>
             </div>
 
-            <div className="p-2.5 rounded-lg bg-[#0e1424] border border-[#1e2b45]">
-              <span className="text-amber-400 font-bold font-mono text-[11px] block mb-0.5">
+            <div
+              className={`p-2.5 rounded-lg border ${
+                isLight
+                  ? 'bg-slate-50 border-slate-200'
+                  : 'bg-[#0e1424] border-[#1e2b45]'
+              }`}
+            >
+              <span className="text-amber-600 dark:text-amber-400 font-bold font-mono text-[11px] block mb-0.5">
                 Rule 2: Verification Transparency
               </span>
-              <p className="text-slate-300 text-[11px]">
+              <p className={isLight ? 'text-slate-600' : 'text-slate-300'}>
                 Alternative routes MUST display an explicit verification badge: <strong>VERIFIED</strong> (sensor/drone confirmed) or <strong>UNVERIFIED</strong> (exists on map, safety unconfirmed).
               </p>
             </div>
 
-            <div className="p-2.5 rounded-lg bg-[#0e1424] border border-[#1e2b45]">
-              <span className="text-red-400 font-bold font-mono text-[11px] block mb-0.5">
+            <div
+              className={`p-2.5 rounded-lg border ${
+                isLight
+                  ? 'bg-slate-50 border-slate-200'
+                  : 'bg-[#0e1424] border-[#1e2b45]'
+              }`}
+            >
+              <span className="text-red-600 dark:text-red-400 font-bold font-mono text-[11px] block mb-0.5">
                 Rule 3: Anti-Hallucination & Refusal
               </span>
-              <p className="text-slate-300 text-[11px]">
+              <p className={isLight ? 'text-slate-600' : 'text-slate-300'}>
                 Never invents roads. If no verified path exists, SOLACE explicitly states: <em>&ldquo;Insufficient information to identify an alternative route. Manual reconnaissance required.&rdquo;</em>
               </p>
             </div>
@@ -284,9 +376,19 @@ export const AIAssistantView: React.FC = () => {
         </div>
 
         {/* Live Ground Truth Graph State */}
-        <div className="p-4 rounded-xl bg-[#131a2a] border border-[#1e293b] space-y-3">
-          <h3 className="text-xs font-bold text-white uppercase font-mono tracking-wider flex items-center space-x-1.5">
-            <Layers className="w-4 h-4 text-cyan-400" />
+        <div
+          className={`p-4 rounded-xl border space-y-3 shadow-sm transition-colors duration-200 ${
+            isLight
+              ? 'bg-white border-slate-200'
+              : 'bg-[#131a2a] border-[#1e293b]'
+          }`}
+        >
+          <h3
+            className={`text-xs font-bold uppercase font-mono tracking-wider flex items-center space-x-1.5 ${
+              isLight ? 'text-slate-900' : 'text-white'
+            }`}
+          >
+            <Layers className="w-4 h-4 text-sky-600 dark:text-cyan-400" />
             <span>Active Road Graph Traversal</span>
           </h3>
 
@@ -294,11 +396,21 @@ export const AIAssistantView: React.FC = () => {
             {state.routes.map((r) => (
               <div
                 key={r.id}
-                className="p-2 rounded bg-[#0e1424] border border-[#1e2b45] flex items-center justify-between"
+                className={`p-2 rounded border flex items-center justify-between ${
+                  isLight
+                    ? 'bg-slate-50 border-slate-200'
+                    : 'bg-[#0e1424] border-[#1e2b45]'
+                }`}
               >
                 <div>
-                  <span className="text-white font-semibold block text-[11px]">{r.name}</span>
-                  <span className="text-[10px] text-slate-500">
+                  <span
+                    className={`font-semibold block text-[11px] ${
+                      isLight ? 'text-slate-800' : 'text-white'
+                    }`}
+                  >
+                    {r.name}
+                  </span>
+                  <span className="text-[10px] text-slate-400">
                     {r.distanceKm}km • {r.status}
                   </span>
                 </div>
@@ -306,9 +418,15 @@ export const AIAssistantView: React.FC = () => {
                   <span
                     className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
                       r.status === 'blocked'
-                        ? 'bg-red-500/20 text-red-400'
+                        ? isLight
+                          ? 'bg-red-100 text-red-800'
+                          : 'bg-red-500/20 text-red-400'
                         : r.verified
-                        ? 'bg-emerald-500/20 text-emerald-400'
+                        ? isLight
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-emerald-500/20 text-emerald-400'
+                        : isLight
+                        ? 'bg-amber-100 text-amber-800'
                         : 'bg-amber-500/20 text-amber-400'
                     }`}
                   >

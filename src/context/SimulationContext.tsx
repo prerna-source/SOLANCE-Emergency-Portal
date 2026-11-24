@@ -49,6 +49,7 @@ interface SimulationContextType {
   dismissAlert: (alertId: string) => void;
   triggerEmergencyBroadcast: () => void;
   resetSimulation: () => void;
+  toggleTheme: (theme?: 'light' | 'dark') => void;
 }
 
 const SimulationContext = createContext<SimulationContextType | undefined>(undefined);
@@ -73,6 +74,20 @@ export const SimulationProvider: React.FC<{ children: ReactNode }> = ({ children
   const [audioAlertsEnabled, setAudioAlertsEnabled] = useState<boolean>(false);
   const [activeTab, setActiveTabState] = useState<SimulationState['activeTab']>('dashboard');
   const [searchQuery, setSearchQueryState] = useState<string>('');
+  const [theme, setThemeState] = useState<'light' | 'dark'>('light');
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
+
+  const toggleTheme = (val?: 'light' | 'dark') => {
+    const next = val !== undefined ? val : theme === 'light' ? 'dark' : 'light';
+    setThemeState(next);
+  };
 
   // Apply predefined scenarios strictly
   const applyScenario = (scenario: ScenarioType) => {
@@ -408,6 +423,7 @@ export const SimulationProvider: React.FC<{ children: ReactNode }> = ({ children
       audioAlertsEnabled,
       activeTab,
       searchQuery,
+      theme,
     },
     activeIncident,
     aiRecommendation,
@@ -428,6 +444,7 @@ export const SimulationProvider: React.FC<{ children: ReactNode }> = ({ children
     dismissAlert,
     triggerEmergencyBroadcast,
     resetSimulation,
+    toggleTheme,
   };
 
   return <SimulationContext.Provider value={value}>{children}</SimulationContext.Provider>;

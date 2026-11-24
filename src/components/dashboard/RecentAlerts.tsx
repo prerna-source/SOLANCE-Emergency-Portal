@@ -7,13 +7,13 @@ import {
   CheckCircle2,
   Trash2,
   ArrowRight,
-  Filter,
 } from 'lucide-react';
 import { useSimulation } from '../../context/SimulationContext';
 import { AlertNotification } from '../../types';
 
 export const RecentAlerts: React.FC = () => {
   const { state, selectIncident, dismissAlert, selectRoute } = useSimulation();
+  const isLight = state.theme === 'light';
   const [filter, setFilter] = useState<'all' | 'Critical' | 'Moderate' | 'Info'>('all');
 
   const filteredAlerts = state.alerts.filter((alert) => {
@@ -25,27 +25,35 @@ export const RecentAlerts: React.FC = () => {
     switch (priority) {
       case 'Critical':
         return {
-          bg: 'bg-red-500/20 text-red-400 border-red-500/40',
+          bg: isLight
+            ? 'bg-red-50 text-red-700 border-red-200'
+            : 'bg-red-500/20 text-red-400 border-red-500/40',
           icon: AlertCircle,
           border: 'border-l-red-500',
         };
       case 'Moderate':
         return {
-          bg: 'bg-amber-500/20 text-amber-400 border-amber-500/40',
+          bg: isLight
+            ? 'bg-amber-50 text-amber-700 border-amber-200'
+            : 'bg-amber-500/20 text-amber-400 border-amber-500/40',
           icon: AlertTriangle,
           border: 'border-l-amber-500',
         };
       case 'Info':
         return {
-          bg: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40',
+          bg: isLight
+            ? 'bg-sky-50 text-sky-700 border-sky-200'
+            : 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40',
           icon: Info,
-          border: 'border-l-cyan-500',
+          border: 'border-l-sky-500',
         };
       default:
         return {
-          bg: 'bg-slate-500/20 text-slate-400 border-slate-500/40',
+          bg: isLight
+            ? 'bg-slate-100 text-slate-700 border-slate-200'
+            : 'bg-slate-500/20 text-slate-400 border-slate-500/40',
           icon: Bell,
-          border: 'border-l-slate-500',
+          border: 'border-l-slate-400',
         };
     }
   };
@@ -60,16 +68,34 @@ export const RecentAlerts: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-[540px] rounded-xl bg-[#131a2a] border border-[#1e293b] shadow-2xl overflow-hidden">
+    <div
+      className={`flex flex-col h-[540px] rounded-xl border shadow-xl overflow-hidden transition-colors duration-200 ${
+        isLight
+          ? 'bg-white border-slate-200'
+          : 'bg-[#131a2a] border-[#1e293b]'
+      }`}
+    >
       {/* Header */}
-      <div className="p-4 border-b border-[#1e293b] flex items-center justify-between bg-[#0e1424]">
+      <div
+        className={`p-4 border-b flex items-center justify-between transition-colors duration-200 ${
+          isLight
+            ? 'bg-slate-50 border-slate-200'
+            : 'bg-[#0e1424] border-[#1e293b]'
+        }`}
+      >
         <div className="flex items-center space-x-2">
           <div className="relative">
-            <Bell className="w-4 h-4 text-red-400" />
+            <Bell className="w-4 h-4 text-red-500 animate-pulse" />
             <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500 animate-ping" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white tracking-wide">Recent Alerts Feed</h3>
+            <h3
+              className={`text-sm font-bold tracking-wide ${
+                isLight ? 'text-slate-900' : 'text-white'
+              }`}
+            >
+              Recent Alerts Feed
+            </h3>
             <p className="text-[10px] text-slate-400 font-mono">
               {filteredAlerts.length} live tactical broadcasts
             </p>
@@ -84,7 +110,9 @@ export const RecentAlerts: React.FC = () => {
               onClick={() => setFilter(lvl)}
               className={`px-2 py-0.5 rounded text-[10px] font-mono font-semibold transition-all ${
                 filter === lvl
-                  ? 'bg-red-500 text-white'
+                  ? 'bg-red-600 text-white'
+                  : isLight
+                  ? 'bg-slate-200 text-slate-600 hover:text-slate-900'
                   : 'bg-[#182238] text-slate-400 hover:text-white'
               }`}
             >
@@ -111,8 +139,14 @@ export const RecentAlerts: React.FC = () => {
               <div
                 key={alert.id}
                 onClick={() => handleAlertClick(alert)}
-                className={`p-3 rounded-lg border-l-4 ${badge.border} bg-[#0e1424]/90 hover:bg-[#182238] border border-[#1e293b] cursor-pointer transition-all group relative ${
-                  isRelatedIncident ? 'ring-1 ring-red-500/50 shadow-md shadow-red-950/40' : ''
+                className={`p-3 rounded-lg border-l-4 ${badge.border} cursor-pointer transition-all group relative border ${
+                  isLight
+                    ? isRelatedIncident
+                      ? 'bg-red-50/50 border-red-300 ring-1 ring-red-400/40 shadow-sm'
+                      : 'bg-white hover:bg-slate-50 border-slate-200 shadow-xs'
+                    : isRelatedIncident
+                    ? 'bg-[#0e1424]/90 border-[#1e293b] ring-1 ring-red-500/50 shadow-md shadow-red-950/40'
+                    : 'bg-[#0e1424]/90 hover:bg-[#182238] border-[#1e293b]'
                 }`}
               >
                 {/* Top Row */}
@@ -125,20 +159,26 @@ export const RecentAlerts: React.FC = () => {
                       <span>{alert.priority.toUpperCase()}</span>
                     </span>
                     {isRelatedIncident && (
-                      <span className="text-[9px] font-mono font-bold text-red-400 animate-pulse">
+                      <span className="text-[9px] font-mono font-bold text-red-600 dark:text-red-400 animate-pulse">
                         ● ACTIVE FOCUS
                       </span>
                     )}
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="text-[10px] font-mono text-slate-400">{alert.timestamp}</span>
+                    <span
+                      className={`text-[10px] font-mono ${
+                        isLight ? 'text-slate-500' : 'text-slate-400'
+                      }`}
+                    >
+                      {alert.timestamp}
+                    </span>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         dismissAlert(alert.id);
                       }}
                       title="Dismiss Alert"
-                      className="text-slate-400 hover:text-red-400 transition-colors p-0.5"
+                      className="text-slate-400 hover:text-red-500 transition-colors p-0.5"
                     >
                       <Trash2 className="w-3 h-3" />
                     </button>
@@ -146,19 +186,39 @@ export const RecentAlerts: React.FC = () => {
                 </div>
 
                 {/* Title */}
-                <h4 className="text-xs font-bold text-slate-100 group-hover:text-red-300 transition-colors">
+                <h4
+                  className={`text-xs font-bold transition-colors ${
+                    isLight
+                      ? 'text-slate-900 group-hover:text-red-600'
+                      : 'text-slate-100 group-hover:text-red-300'
+                  }`}
+                >
                   {alert.title}
                 </h4>
 
                 {/* Message */}
-                <p className="text-[11px] text-slate-400 mt-1 leading-snug">
+                <p
+                  className={`text-[11px] mt-1 leading-snug ${
+                    isLight ? 'text-slate-600' : 'text-slate-400'
+                  }`}
+                >
                   {alert.message}
                 </p>
 
                 {/* Bottom Callout */}
-                <div className="mt-2 pt-1.5 border-t border-[#1e293b]/60 flex items-center justify-between text-[10px] font-mono text-slate-400">
+                <div
+                  className={`mt-2 pt-1.5 border-t flex items-center justify-between text-[10px] font-mono ${
+                    isLight
+                      ? 'border-slate-100 text-slate-500'
+                      : 'border-[#1e293b]/60 text-slate-400'
+                  }`}
+                >
                   <span>{alert.incidentId ? `Linked: ${alert.incidentId}` : 'Broadcast'}</span>
-                  <span className="text-cyan-400 flex items-center space-x-0.5 group-hover:translate-x-0.5 transition-transform">
+                  <span
+                    className={`flex items-center space-x-0.5 group-hover:translate-x-0.5 transition-transform ${
+                      isLight ? 'text-sky-600 font-semibold' : 'text-cyan-400'
+                    }`}
+                  >
                     <span>Inspect Target</span>
                     <ArrowRight className="w-3 h-3" />
                   </span>
@@ -170,7 +230,13 @@ export const RecentAlerts: React.FC = () => {
       </div>
 
       {/* Footer Instructions */}
-      <div className="p-2.5 bg-[#0e1424] border-t border-[#1e293b] text-center text-[10px] font-mono text-slate-400">
+      <div
+        className={`p-2.5 border-t text-center text-[10px] font-mono transition-colors duration-200 ${
+          isLight
+            ? 'bg-slate-50 border-slate-200 text-slate-500'
+            : 'bg-[#0e1424] border-[#1e293b] text-slate-400'
+        }`}
+      >
         💡 Click any alert to auto-focus map coordinates & trigger SOLACE AI rerouting analysis.
       </div>
     </div>

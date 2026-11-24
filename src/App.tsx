@@ -12,11 +12,20 @@ import { useSimulation } from './context/SimulationContext';
 
 export const AppContent: React.FC = () => {
   const { state } = useSimulation();
+  const isLight = state.theme === 'light';
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#0b0f19] text-slate-100 font-sans select-none relative">
-      {/* Scanline Overlay for subtle Tactical Command Center Feel */}
-      <div className="absolute inset-0 scanlines pointer-events-none z-50 opacity-40" />
+    <div
+      className={`flex h-screen w-screen overflow-hidden font-sans select-none relative transition-colors duration-200 ${
+        isLight
+          ? 'bg-slate-100 text-slate-900'
+          : 'bg-[#0b0f19] text-slate-100'
+      }`}
+    >
+      {/* Scanline Overlay for subtle Tactical Command Center Feel in Dark Mode */}
+      {!isLight && (
+        <div className="absolute inset-0 scanlines pointer-events-none z-50 opacity-40" />
+      )}
 
       {/* Left Sidebar */}
       <Sidebar />
@@ -27,7 +36,11 @@ export const AppContent: React.FC = () => {
         <Header />
 
         {/* Dynamic View Body */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6 bg-[#0b0f19]">
+        <main
+          className={`flex-1 overflow-y-auto p-4 lg:p-6 transition-colors duration-200 ${
+            isLight ? 'bg-[#f1f5f9]' : 'bg-[#0b0f19]'
+          }`}
+        >
           {state.activeTab === 'dashboard' && <DashboardView />}
           {state.activeTab === 'simulate' && <SimulateDisasterView />}
           {state.activeTab === 'incidents' && <IncidentsView />}

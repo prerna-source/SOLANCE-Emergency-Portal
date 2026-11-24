@@ -4,30 +4,38 @@ import {
   Truck,
   Home,
   Heart,
-  BatteryCharging,
-  ShieldCheck,
-  CheckCircle2,
-  Users,
-  Clock,
   MapPin,
-  Activity,
-  AlertCircle,
 } from 'lucide-react';
 import { useSimulation } from '../../context/SimulationContext';
 
 export const ResourcesView: React.FC = () => {
   const { state, dispatchTeam } = useSimulation();
+  const isLight = state.theme === 'light';
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="p-4 rounded-xl bg-[#131a2a] border border-[#1e293b] flex items-center justify-between">
+      <div
+        className={`p-4 rounded-xl border flex items-center justify-between shadow-sm transition-colors duration-200 ${
+          isLight
+            ? 'bg-white border-slate-200'
+            : 'bg-[#131a2a] border-[#1e293b]'
+        }`}
+      >
         <div>
-          <h2 className="text-base font-bold text-white font-mono flex items-center space-x-2">
-            <Boxes className="w-5 h-5 text-emerald-400" />
+          <h2
+            className={`text-base font-bold font-mono flex items-center space-x-2 ${
+              isLight ? 'text-slate-900' : 'text-white'
+            }`}
+          >
+            <Boxes className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             <span>Resource Inventory & Logistics Command</span>
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p
+            className={`text-xs mt-0.5 ${
+              isLight ? 'text-slate-500' : 'text-slate-400'
+            }`}
+          >
             Active tracking for Rescue Fleets, Mass Shelters, and Emergency Trauma Centers.
           </p>
         </div>
@@ -35,8 +43,12 @@ export const ResourcesView: React.FC = () => {
 
       {/* 1. Rescue Teams Section */}
       <div>
-        <h3 className="text-sm font-bold text-white uppercase font-mono tracking-wider mb-3 flex items-center space-x-2">
-          <Truck className="w-4 h-4 text-emerald-400" />
+        <h3
+          className={`text-sm font-bold uppercase font-mono tracking-wider mb-3 flex items-center space-x-2 ${
+            isLight ? 'text-slate-900' : 'text-white'
+          }`}
+        >
+          <Truck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           <span>Deployed Rescue Squads & Heavy Equipment</span>
         </h3>
 
@@ -44,19 +56,33 @@ export const ResourcesView: React.FC = () => {
           {state.rescueTeams.map((team) => (
             <div
               key={team.id}
-              className="p-4 rounded-xl bg-[#131a2a] border border-[#1e293b] flex flex-col justify-between space-y-3"
+              className={`p-4 rounded-xl border flex flex-col justify-between space-y-3 shadow-sm hover:shadow-md transition-all ${
+                isLight
+                  ? 'bg-white border-slate-200 text-slate-800'
+                  : 'bg-[#131a2a] border-[#1e293b] text-slate-100'
+              }`}
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-mono font-bold text-white">
+                  <span
+                    className={`text-xs font-mono font-bold ${
+                      isLight ? 'text-slate-900' : 'text-white'
+                    }`}
+                  >
                     {team.callsign}
                   </span>
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
                       team.status === 'deployed'
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        ? isLight
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                          : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                         : team.status === 'en_route'
-                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                        ? isLight
+                          ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                          : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                        : isLight
+                        ? 'bg-sky-100 text-sky-800 border border-sky-300'
                         : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
                     }`}
                   >
@@ -64,24 +90,46 @@ export const ResourcesView: React.FC = () => {
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-300 font-semibold mb-1">{team.vehicleType}</p>
-                <p className="text-[11px] text-slate-400 flex items-center space-x-1 mb-2">
-                  <MapPin className="w-3 h-3 text-cyan-400 shrink-0" />
+                <p
+                  className={`text-xs font-semibold mb-1 ${
+                    isLight ? 'text-slate-700' : 'text-slate-300'
+                  }`}
+                >
+                  {team.vehicleType}
+                </p>
+                <p
+                  className={`text-[11px] flex items-center space-x-1 mb-2 ${
+                    isLight ? 'text-slate-500' : 'text-slate-400'
+                  }`}
+                >
+                  <MapPin className="w-3 h-3 text-sky-600 dark:text-cyan-400 shrink-0" />
                   <span className="truncate">{team.location}</span>
                 </p>
 
-                <div className="p-2 rounded-lg bg-[#0e1424] border border-[#1e2b45] text-[10px] font-mono space-y-1 mb-2">
-                  <div className="flex justify-between text-slate-400">
+                <div
+                  className={`p-2 rounded-lg border text-[10px] font-mono space-y-1 mb-2 ${
+                    isLight
+                      ? 'bg-slate-50 border-slate-200'
+                      : 'bg-[#0e1424] border-[#1e2b45]'
+                  }`}
+                >
+                  <div className="flex justify-between text-slate-500 dark:text-slate-400">
                     <span>Leader:</span>
-                    <span className="text-slate-200">{team.leader}</span>
+                    <span className={isLight ? 'text-slate-800 font-semibold' : 'text-slate-200'}>
+                      {team.leader}
+                    </span>
                   </div>
-                  <div className="flex justify-between text-slate-400">
+                  <div className="flex justify-between text-slate-500 dark:text-slate-400">
                     <span>Personnel:</span>
-                    <span className="text-slate-200">{team.personnel} operatives</span>
+                    <span className={isLight ? 'text-slate-800 font-semibold' : 'text-slate-200'}>
+                      {team.personnel} operatives
+                    </span>
                   </div>
-                  <div className="flex justify-between text-slate-400">
+                  <div className="flex justify-between text-slate-500 dark:text-slate-400">
                     <span>Telemetry Battery:</span>
-                    <span className="text-emerald-400 font-bold">{team.batteryPercent}%</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                      {team.batteryPercent}%
+                    </span>
                   </div>
                 </div>
 
@@ -93,7 +141,11 @@ export const ResourcesView: React.FC = () => {
                     {team.equipment.map((eq) => (
                       <span
                         key={eq}
-                        className="px-1.5 py-0.5 rounded bg-[#182238] text-[9px] font-mono text-slate-300"
+                        className={`px-1.5 py-0.5 rounded text-[9px] font-mono border ${
+                          isLight
+                            ? 'bg-slate-100 text-slate-700 border-slate-200'
+                            : 'bg-[#182238] text-slate-300 border-[#2a3b5c]'
+                        }`}
                       >
                         {eq}
                       </span>
@@ -102,10 +154,18 @@ export const ResourcesView: React.FC = () => {
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-[#1e293b]">
+              <div
+                className={`pt-2 border-t ${
+                  isLight ? 'border-slate-200' : 'border-[#1e293b]'
+                }`}
+              >
                 <button
                   onClick={() => dispatchTeam(team.id, state.selectedIncidentId)}
-                  className="w-full py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 text-xs font-mono font-semibold transition-all"
+                  className={`w-full py-1.5 rounded-lg border text-xs font-mono font-semibold transition-all ${
+                    isLight
+                      ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
+                      : 'bg-emerald-600/20 hover:bg-emerald-600/30 border-emerald-500/40 text-emerald-300'
+                  }`}
                 >
                   Reassign / Dispatch
                 </button>
@@ -117,8 +177,12 @@ export const ResourcesView: React.FC = () => {
 
       {/* 2. Shelters Section */}
       <div>
-        <h3 className="text-sm font-bold text-white uppercase font-mono tracking-wider mb-3 flex items-center space-x-2">
-          <Home className="w-4 h-4 text-purple-400" />
+        <h3
+          className={`text-sm font-bold uppercase font-mono tracking-wider mb-3 flex items-center space-x-2 ${
+            isLight ? 'text-slate-900' : 'text-white'
+          }`}
+        >
+          <Home className="w-4 h-4 text-purple-600 dark:text-purple-400" />
           <span>Evacuation Shelters & Relief Camps</span>
         </h3>
 
@@ -128,16 +192,32 @@ export const ResourcesView: React.FC = () => {
             return (
               <div
                 key={shelter.id}
-                className="p-4 rounded-xl bg-[#131a2a] border border-[#1e293b] space-y-3"
+                className={`p-4 rounded-xl border space-y-3 shadow-sm hover:shadow-md transition-all ${
+                  isLight
+                    ? 'bg-white border-slate-200 text-slate-800'
+                    : 'bg-[#131a2a] border-[#1e293b] text-slate-100'
+                }`}
               >
                 <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-bold text-white truncate">{shelter.name}</h4>
+                  <h4
+                    className={`text-sm font-bold truncate ${
+                      isLight ? 'text-slate-900' : 'text-white'
+                    }`}
+                  >
+                    {shelter.name}
+                  </h4>
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
                       occupancyPct >= 90
-                        ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                        ? isLight
+                          ? 'bg-red-100 text-red-800 border border-red-300'
+                          : 'bg-red-500/20 text-red-400 border border-red-500/30'
                         : occupancyPct >= 70
-                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                        ? isLight
+                          ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                          : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                        : isLight
+                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                         : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                     }`}
                   >
@@ -145,17 +225,29 @@ export const ResourcesView: React.FC = () => {
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-400">{shelter.location}</p>
+                <p className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                  {shelter.location}
+                </p>
 
                 {/* Occupancy Progress Bar */}
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs font-mono">
-                    <span className="text-slate-400">Occupancy:</span>
-                    <span className="text-white font-bold">
+                    <span className={isLight ? 'text-slate-500' : 'text-slate-400'}>
+                      Occupancy:
+                    </span>
+                    <span
+                      className={`font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}
+                    >
                       {shelter.currentOccupancy} / {shelter.totalCapacity}
                     </span>
                   </div>
-                  <div className="w-full bg-[#0e1424] rounded-full h-2 overflow-hidden border border-[#1e293b]">
+                  <div
+                    className={`w-full rounded-full h-2 overflow-hidden border ${
+                      isLight
+                        ? 'bg-slate-100 border-slate-200'
+                        : 'bg-[#0e1424] border-[#1e293b]'
+                    }`}
+                  >
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
                         occupancyPct >= 90
@@ -169,16 +261,36 @@ export const ResourcesView: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-2.5 rounded-lg bg-[#0e1424] border border-[#1e2b45] text-xs font-mono space-y-1">
+                <div
+                  className={`p-2.5 rounded-lg border text-xs font-mono space-y-1 ${
+                    isLight
+                      ? 'bg-slate-50 border-slate-200'
+                      : 'bg-[#0e1424] border-[#1e2b45]'
+                  }`}
+                >
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Medical Station:</span>
-                    <span className={shelter.medicalAidAvailable ? 'text-emerald-400' : 'text-slate-500'}>
+                    <span className={isLight ? 'text-slate-500' : 'text-slate-400'}>
+                      Medical Station:
+                    </span>
+                    <span
+                      className={
+                        shelter.medicalAidAvailable
+                          ? isLight
+                            ? 'text-emerald-700 font-bold'
+                            : 'text-emerald-400'
+                          : 'text-slate-400'
+                      }
+                    >
                       {shelter.medicalAidAvailable ? 'Active Staffed' : 'None'}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Rations Remaining:</span>
-                    <span className="text-amber-400 font-bold">{shelter.foodSuppliesDays} Days</span>
+                    <span className={isLight ? 'text-slate-500' : 'text-slate-400'}>
+                      Rations Remaining:
+                    </span>
+                    <span className="text-amber-600 dark:text-amber-400 font-bold">
+                      {shelter.foodSuppliesDays} Days
+                    </span>
                   </div>
                 </div>
               </div>
@@ -189,8 +301,12 @@ export const ResourcesView: React.FC = () => {
 
       {/* 3. Hospitals Section */}
       <div>
-        <h3 className="text-sm font-bold text-white uppercase font-mono tracking-wider mb-3 flex items-center space-x-2">
-          <Heart className="w-4 h-4 text-cyan-400" />
+        <h3
+          className={`text-sm font-bold uppercase font-mono tracking-wider mb-3 flex items-center space-x-2 ${
+            isLight ? 'text-slate-900' : 'text-white'
+          }`}
+        >
+          <Heart className="w-4 h-4 text-sky-600 dark:text-cyan-400" />
           <span>Trauma Centers & Hospital Bed Telemetry</span>
         </h3>
 
@@ -198,33 +314,81 @@ export const ResourcesView: React.FC = () => {
           {state.hospitals.map((hosp) => (
             <div
               key={hosp.id}
-              className="p-4 rounded-xl bg-[#131a2a] border border-[#1e293b] space-y-3"
+              className={`p-4 rounded-xl border space-y-3 shadow-sm hover:shadow-md transition-all ${
+                isLight
+                  ? 'bg-white border-slate-200 text-slate-800'
+                  : 'bg-[#131a2a] border-[#1e293b] text-slate-100'
+              }`}
             >
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-bold text-white truncate">{hosp.name}</h4>
-                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                <h4
+                  className={`text-sm font-bold truncate ${
+                    isLight ? 'text-slate-900' : 'text-white'
+                  }`}
+                >
+                  {hosp.name}
+                </h4>
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                    isLight
+                      ? 'bg-sky-100 text-sky-800 border border-sky-300'
+                      : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                  }`}
+                >
                   LEVEL {hosp.traumaCenterLevel} TRAUMA
                 </span>
               </div>
 
-              <p className="text-xs text-slate-400">{hosp.location}</p>
+              <p className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                {hosp.location}
+              </p>
 
-              <div className="p-3 rounded-lg bg-[#0e1424] border border-[#1e2b45] grid grid-cols-2 gap-3 text-center font-mono">
+              <div
+                className={`p-3 rounded-lg border grid grid-cols-2 gap-3 text-center font-mono ${
+                  isLight
+                    ? 'bg-slate-50 border-slate-200'
+                    : 'bg-[#0e1424] border-[#1e2b45]'
+                }`}
+              >
                 <div>
-                  <span className="text-[10px] text-slate-400 block">Total Beds</span>
-                  <span className="text-white font-bold text-base">{hosp.totalBeds}</span>
+                  <span
+                    className={`text-[10px] block ${
+                      isLight ? 'text-slate-500' : 'text-slate-400'
+                    }`}
+                  >
+                    Total Beds
+                  </span>
+                  <span
+                    className={`font-bold text-base ${
+                      isLight ? 'text-slate-900' : 'text-white'
+                    }`}
+                  >
+                    {hosp.totalBeds}
+                  </span>
                 </div>
-                <div className="border-l border-[#1e2b45]">
-                  <span className="text-[10px] text-slate-400 block">ICU Beds Free</span>
-                  <span className="text-emerald-400 font-bold text-base">
+                <div className={`border-l ${isLight ? 'border-slate-200' : 'border-[#1e2b45]'}`}>
+                  <span
+                    className={`text-[10px] block ${
+                      isLight ? 'text-slate-500' : 'text-slate-400'
+                    }`}
+                  >
+                    ICU Beds Free
+                  </span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold text-base">
                     {hosp.icuBedsAvailable}
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-xs font-mono text-slate-400">
+              <div
+                className={`flex items-center justify-between text-xs font-mono ${
+                  isLight ? 'text-slate-500' : 'text-slate-400'
+                }`}
+              >
                 <span>Triage Load:</span>
-                <span className="text-amber-400 font-bold uppercase">{hosp.triageStatus}</span>
+                <span className="text-amber-600 dark:text-amber-400 font-bold uppercase">
+                  {hosp.triageStatus}
+                </span>
               </div>
             </div>
           ))}

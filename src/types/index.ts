@@ -142,4 +142,5 @@ export interface SimulationState {
   audioAlertsEnabled: boolean;
   activeTab: 'dashboard' | 'simulate' | 'incidents' | 'resources' | 'ai-assistant' | 'reports' | 'settings';
   searchQuery: string;
+  theme: 'light' | 'dark';
 }
